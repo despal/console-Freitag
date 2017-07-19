@@ -18,6 +18,10 @@ main(List<String> arguments) {
   Game.removeVSCard();
   //Выбираем карту угрозы:
   while(playingGame) {
+    if(Game.getHealth()<0) {
+      print('You lose');
+      return 0;
+    }
     Game.processToNewRound();
     hCards = Game.chooseHazardCard();
     printHazard(hCards);
@@ -40,6 +44,8 @@ main(List<String> arguments) {
       }
     }
     //fight with hazard
+    //autodraw 1 card
+    Game.drawRobinzonCard();
     //printGame();
     okAnswer = false;
     while (!okAnswer) {
@@ -59,58 +65,8 @@ main(List<String> arguments) {
             okAnswer = true;
             break;
           case 'fight':
-            Game.fightHazard();
-            var toDel = [];
-            toDel = Game.getCardToDel();
-            if (toDel.length == 0) {
-              if (Game.getHealth() < 0) {
-                stdout.writeln('You lose');
-                return 0;
-              }
-              //перейти к следующему туру игры
-              okAnswer = true;
-              break;
-            }
-            else {
-              //int tmp = (Game.getHazardValue()-Game.getFightValue());
-              //stdout.writeln('You can select card to delete it from the game for ['+tmp.toString()+'] points (enter numbers or exit)');
-
-              bool goON = true;
-              while (goON) {
-                //int r = 0;
-                printLine('═');
-                stdout.writeln(
-                    'You can select card to delete it from the game for [' +
-                        Game.getDeletePoints().toString() +
-                        '] points (enter numbers or exit)');
-                printLine('═');
-                int N = 0;
-                for (var i in toDel) {
-                  N++;
-                  stdout.writeln(N.toString() + i.toString());
-                }
-                var delAction = stdin.readLineSync();
-                var delNum = int.parse(delAction, onError: (delAction) => null);
-                if (delNum != null) {
-                  Game.deleteCardFromGame(delNum - 1);
-                }
-                else {
-                  if (delAction == 'exit') {
-                    goON = false;
-                    //подготовиться к новому раунду
-                    okAnswer = true;
-                  }
-                  else
-                    stdout.writeln('enter numbers or type exit');
-                }
-                //tmp = tmp-r;
-                toDel = Game.getCardToDel();
-                if (Game.getDeletePoints() <= 0) {
-                  goON = false;
-                  okAnswer = true;
-                }
-              }
-            }
+            okAnswer = true;
+            fighting();
             //срабатывают плохие свойства.
             break;
         }
@@ -119,6 +75,95 @@ main(List<String> arguments) {
     }
   }
 
+}
+
+void fighting() {
+  Game.fightHazard();
+  if(Game.getHealth() >= 0) {
+    List<startingCard> toDel = [];
+    bool goON = true;
+    while (goON) {
+      Game.processCardToDel();
+      toDel = Game.getCardToDel();
+      if (toDel.length > 0) {
+        printLine('═');
+        stdout.writeln(
+            'You can select card to delete it from the game for [' +
+                Game.getDeletePoints().toString() +
+                '] points (enter numbers or exit)');
+        printLine('═');
+        //int N = 0;
+        for (var i = 0; i < toDel.length; i++) //{
+          //N++;
+          stdout.writeln(i.toString() + toDel[i].toString());
+        //}
+        var delAction = stdin.readLineSync();
+        var delNum = int.parse(delAction, onError: (delAction) => null);
+        if (delNum != null)
+          Game.deleteCardFromGame(delNum - 1);
+        else {
+          if (delAction == 'exit')
+            goON = false;
+          else
+            stdout.writeln('Type number or type "exit"');
+        }
+      } //if.
+      else
+        goON = false;
+    } //while goON
+
+  }
+/*
+  if (toDel.length == 0) {
+    if (Game.getHealth() < 0) {
+      stdout.writeln('You lose');
+      return 0;
+    }
+    //перейти к следующему туру игры
+    okAnswer = true;
+    break;
+  }
+  else {
+    //int tmp = (Game.getHazardValue()-Game.getFightValue());
+    //stdout.writeln('You can select card to delete it from the game for ['+tmp.toString()+'] points (enter numbers or exit)');
+
+    bool goON = true;
+    while (goON) {
+      //int r = 0;
+      printLine('═');
+      stdout.writeln('You can select card to delete it from the game for [' +
+              Game.getDeletePoints().toString() +
+              '] points (enter numbers or exit)');
+      printLine('═');
+      int N = 0;
+      for (var i in toDel) {
+        N++;
+        stdout.writeln(N.toString() + i.toString());
+      }
+      var delAction = stdin.readLineSync();
+      var delNum = int.parse(delAction, onError: (delAction) => null);
+      if (delNum != null) {
+        Game.deleteCardFromGame(delNum - 1);
+      }
+      else {
+        if (delAction == 'exit') {
+          goON = false;
+          //подготовиться к новому раунду
+          okAnswer = true;
+        }
+        else
+          stdout.writeln('enter numbers or type exit');
+      }
+      //tmp = tmp-r;
+      toDel = Game.getCardToDel();
+      if (Game.getDeletePoints() <= 0) {
+        goON = false;
+        okAnswer = true;
+      }
+    }
+  }
+
+  return okAnswer;*/
 }
 
 printLine(var c,[int N]){

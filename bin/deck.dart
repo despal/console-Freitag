@@ -47,8 +47,8 @@ class deck{
 
 }
 class playDeck extends deck{
-  List<startingCard> deck;
-  List<startingCard> discard;
+  List<startingCard> deck = new List();
+  List<startingCard> discard = new List();
 
   playDeck(){
     for(var i in startingCards ){
@@ -83,8 +83,8 @@ class playDeck extends deck{
 }
 
 class hazardDeck extends deck{
-  List<hazardCard> deck;
-  List<hazardCard> discard;
+  List<hazardCard> deck = new List();
+  List<hazardCard> discard = new List();
 
   hazardDeck(){
     for(var i in hazardCards ){
@@ -145,8 +145,8 @@ class hazardDeck extends deck{
 }
 
 class agingDeck extends deck{
-  List<agingCard> normal;
-  List<agingCard> difficult;
+  List<agingCard> normal = new List();
+  List<agingCard> difficult = new List();
 
   agingDeck(){
     for(var i in agingCards ){
@@ -159,8 +159,10 @@ class agingDeck extends deck{
 
   deleteVeryStupid(){
     for(var i in normal)
-      if(i.getTitle() == 'very stupid')
+      if(i.getTitle() == 'very stupid') {
         normal.remove(i);
+        break;
+      }
   }
 
 /*

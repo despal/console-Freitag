@@ -47,6 +47,7 @@ class game {
     health = 20;
     step = 0;
     fightValue = 0;
+    currentHazard = null;
   }
 
   String getAbility(Ability N) {
@@ -123,6 +124,8 @@ class game {
           //PIRATES!!!
         }
       }
+      hazardSelect[0] = sel[0];
+      hazardSelect[1] = sel[1];
       return sel;
 
 
